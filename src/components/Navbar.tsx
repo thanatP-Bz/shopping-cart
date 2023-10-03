@@ -4,7 +4,7 @@ import { AiOutlineShoppingCart } from "react-icons/ai";
 
 const Navbar = () => {
   return (
-    <NavbarBs className="bg-white shadow-sm mb-3">
+    <NavbarBs sticky="top" className="bg-white shadow-sm mb-3">
       <Container>
         <Nav className="me-auto">
           <Nav.Link to="/" as={NavLink}>
@@ -26,7 +26,7 @@ const Navbar = () => {
               width: "1.5rem",
               height: "1.5rem",
               position: "absolute",
-              bottom: 0,
+              top: 15,
               right: 0,
               transform: "translate(25%, 25%)",
             }}
