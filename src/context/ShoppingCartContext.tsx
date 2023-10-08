@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useState } from "react";
 
 type shoppingCardProviderProps = {
   children: ReactNode;
@@ -9,23 +9,35 @@ type CartItem = {
   quantity: number;
 };
 
-type shoppingCardContext = {
+export type shoppingCartContextProps = {
+  openCart: () => void;
+  closeCart: () => void;
   getItemQuantity: (id: number) => number;
   increaseCartQuantity: (id: number) => void;
   decreaseCartQuantity: (id: number) => void;
   removeFromCart: (id: number) => void;
+  cartQuantity: number;
+  cartItems: CartItem[];
 };
 
-const ShoppingCartContext = createContext({} as shoppingCardContext);
-
-export const useShoppingCart = () => {
-  return useContext(ShoppingCartContext);
-};
+export const ShoppingCartContext = createContext(
+  {} as shoppingCartContextProps
+);
 
 export const ShoppingCartProvider = ({
   children,
 }: shoppingCardProviderProps) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+  const openCart = () => setIsOpen(true);
+  const closeCart = () => setIsOpen(false);
+
+  const cartQuantity = cartItems.reduce(
+    (quantity, item) => item.quantity + quantity,
+    0
+  );
 
   const getItemQuantity = (id: number) => {
     return cartItems.find((item) => item.id === id)?.quantity || 0;
@@ -33,7 +45,7 @@ export const ShoppingCartProvider = ({
 
   const increaseCartQuantity = (id: number) => {
     setCartItems((currentItem) => {
-      if (currentItem.find((item) => item.id === id) === null) {
+      if (currentItem.find((item) => item.id === id) == null) {
         return [...currentItem, { id, quantity: 1 }];
       } else {
         return currentItem.map((item) => {
@@ -76,6 +88,10 @@ export const ShoppingCartProvider = ({
         increaseCartQuantity,
         decreaseCartQuantity,
         removeFromCart,
+        cartQuantity,
+        cartItems,
+        openCart,
+        closeCart,
       }}
     >
       {children}
